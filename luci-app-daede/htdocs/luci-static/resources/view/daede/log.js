@@ -265,8 +265,8 @@ return view.extend({
 		tick();
 
 		const toolbar = E('div', { 'class': 'dd-log-toolbar' }, [
-			E('label', {}, [ cbAuto, _(' Auto-scroll') ]),
-			E('label', {}, [ cbPause, _(' Pause') ]),
+			E('label', {}, [ cbAuto, _('Auto-scroll') ]),
+			E('label', {}, [ cbPause, _('Pause') ]),
 			inFilter,
 			btnClear,
 			btnDownload,
@@ -277,7 +277,7 @@ return view.extend({
 		return E('div', { 'class': 'dd-log-wrap' }, [
 			E('style', {}, CSS),
 			E('div', { 'class': 'dd-log-card' }, [
-				E('h4', { 'class': 'dd-log-card-title' }, ctx.name + ' Realtime Log'),
+				E('h4', { 'class': 'dd-log-card-title' }, _('%s Realtime Log').format(ctx.name)),
 				toolbar,
 				pane
 			])

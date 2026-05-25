@@ -358,11 +358,14 @@ msgid "clean"
 msgstr "干净"
 
 # ---- log.js toolbar ----
-msgid " Auto-scroll"
-msgstr " 自动滚动"
+msgid "%s Realtime Log"
+msgstr "%s 实时日志"
 
-msgid " Pause"
-msgstr " 暂停"
+msgid "Auto-scroll"
+msgstr "自动滚动"
+
+msgid "Pause"
+msgstr "暂停"
 
 msgid "Filter (substring)"
 msgstr "过滤（子串）"

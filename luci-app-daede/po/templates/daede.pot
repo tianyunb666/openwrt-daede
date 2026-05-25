@@ -340,10 +340,13 @@ msgstr ""
 msgid "clean"
 msgstr ""
 
-msgid " Auto-scroll"
+msgid "%s Realtime Log"
 msgstr ""
 
-msgid " Pause"
+msgid "Auto-scroll"
+msgstr ""
+
+msgid "Pause"
 msgstr ""
 
 msgid "Filter (substring)"

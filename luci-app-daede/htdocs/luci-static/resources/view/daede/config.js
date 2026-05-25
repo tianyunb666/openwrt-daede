@@ -405,15 +405,15 @@ function renderDaeSettings() {
 	);
 }
 
-/* dae 示例里的占位订阅特征 —— example.com 域名或 relative/path/to/* 路径 */
-const RE_PLACEHOLDER_URL = /(['"])((?:https?|https-file|file):\/\/[^'"]*?(?:example\.com|relative\/path\/to)[^'"]*)\1/;
+/* dae 示例里的占位订阅特征 —— example.com、relative/path/to 或中文占位文本 */
+const RE_PLACEHOLDER_URL = /(['"])(?:(?:https?|https-file|file):\/\/[^'"]*?(?:example\.com|relative\/path\/to)[^'"]*|你的订阅链接或者机场链接)\1/;
 
 /* 常用块片段 —— 给文本模式用户一键插入官方推荐结构 */
 const SNIPPETS = {
 	subscription:
 		'\nsubscription {\n' +
 		'    # 把下面这行换成你的机场订阅链接\n' +
-		"    my_sub: 'https://your-airport.example/subscription'\n" +
+		"    my_sub: '你的订阅链接或者机场链接'\n" +
 		'}\n',
 	node:
 		'\nnode {\n' +
@@ -481,8 +481,7 @@ function simplifySubscriptionBlock(text) {
 	const replacement = [
 		'subscription {',
 		'    # ⚠ 把下面这行的 URL 换成你机场的订阅链接，然后保存。',
-		'    # Replace the URL below with your real subscription link, then save.',
-		"    my_sub: 'https://www.example.com/subscription/link'",
+		"    my_sub: '你的订阅链接或者机场链接'",
 		'}'
 	];
 	return lines.slice(0, start).concat(replacement).concat(lines.slice(end + 1)).join('\n');
