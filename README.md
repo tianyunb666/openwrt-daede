@@ -84,9 +84,14 @@ wget -O - https://raw.githubusercontent.com/kenzok8/luci-app-daede/refs/heads/ma
 
 | 包名 | 说明 |
 |------|------|
-| `luci-app-daede` | LuCI 管理界面 |
-| `dae` 或 `daed` | 透明代理后端（二选一） |
-| `luci` | OpenWrt Web 框架 |
+| `ca-bundle` | CA 证书包 |
+| `kmod-sched-core` | eBPF 调度核心 |
+| `kmod-sched-bpf` | eBPF 流量分类 |
+| `kmod-veth` | 虚拟以太网设备 |
+| `kmod-xdp-sockets-diag` | XDP socket 诊断 |
+| `kmod-nft-tproxy` | nftables TPROXY 支持（daed） |
+
+dae / daed 二进制由用户按需安装，luci-app-daede 的 Makefile 会自动拉取对应后端包。
 
 ## 系统要求
 
