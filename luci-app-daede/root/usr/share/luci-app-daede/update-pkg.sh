@@ -38,11 +38,11 @@ fi
 	echo "$(date '+%F %T') begin upgrade: $PKG"
 
 	if command -v apk >/dev/null 2>&1; then
-		echo "--- apk update ---"
-		apk update 2>&1
-		echo "--- apk add $PKG ---"
+		# Serialize with the view's background index refresh (shared apk lock) so
+		# we never hit "Unable to lock database".
+		echo "--- apk update + add $PKG ---"
 		# Target only $PKG (not `apk upgrade`, which re-solves the whole world).
-		apk add "$PKG" 2>&1
+		flock /tmp/luci-app-daede.apk.lock sh -c 'apk update 2>&1; apk add "$1" 2>&1' _ "$PKG"
 		# Don't trust apk's exit code: apk-tools 3 returns non-zero whenever ANY
 		# unrelated installed package has an unavailable .apk in the configured
 		# feeds, even when $PKG itself upgraded fine. Judge success by state —
