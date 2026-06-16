@@ -102,6 +102,12 @@ function probePkg(pkg) {
 	});
 }
 
+// YYYYMMDD-HHMM stamp for backup filenames
+function stamp() {
+	const d = new Date(), p = n => (n < 10 ? '0' : '') + n;
+	return '' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes());
+}
+
 return view.extend({
 	load: function() {
 		// background apk update so new versions show on next poll
@@ -171,6 +177,49 @@ return view.extend({
 		const upgradePkg = function(pkg, btn) {
 			return runJob('update-pkg.sh', pkg, btn, '/tmp/luci-app-daede.pkg-' + pkg + '.log');
 		};
+
+		// === Config backup (export / import the whole daede config) ===
+		const exportBtn = E('button', { 'class': 'dd-up-btn' }, _('Export'));
+		const importBtn = E('button', { 'class': 'dd-up-btn' }, _('Import'));
+		const fileInput = E('input', { 'type': 'file', 'accept': '.tar.gz,.gz,application/gzip', 'style': 'display:none' });
+
+		exportBtn.addEventListener('click', function() {
+			const orig = exportBtn.textContent;
+			exportBtn.disabled = true; exportBtn.textContent = '...';
+			fs.exec('/usr/share/luci-app-daede/config-backup.sh', ['export']).then(function(res) {
+				if (res.code !== 0 || !res.stdout) {
+					logPane.textContent = String(res.stderr || res.stdout || 'export failed').trim();
+					logPane.classList.add('show');
+					return;
+				}
+				const bin = atob(res.stdout.trim());
+				const arr = new Uint8Array(bin.length);
+				for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+				const url = URL.createObjectURL(new Blob([arr], { 'type': 'application/gzip' }));
+				const a = E('a', { 'href': url, 'download': 'daede-config-' + stamp() + '.tar.gz' });
+				document.body.appendChild(a); a.click(); document.body.removeChild(a);
+				setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+			}).catch(function() {}).finally(function() {
+				exportBtn.disabled = false; exportBtn.textContent = orig;
+			});
+		});
+
+		importBtn.addEventListener('click', function() { fileInput.click(); });
+		fileInput.addEventListener('change', function(ev) {
+			const file = ev.target.files && ev.target.files[0];
+			if (!file) return;
+			if (!confirm(_('Import overwrites the current daede config and restarts the backend. Continue?'))) {
+				fileInput.value = ''; return;
+			}
+			const reader = new FileReader();
+			reader.onload = function(e) {
+				const b64 = String(e.target.result).split(',')[1] || '';
+				fs.write('/tmp/daede-import.b64', b64).then(function() {
+					return runJob('config-backup.sh', 'import', importBtn, '/tmp/luci-app-daede.backup.log');
+				}).catch(function() {}).finally(function() { fileInput.value = ''; });
+			};
+			reader.readAsDataURL(file);
+		});
 
 		const refresh = function() {
 			const probes = [
@@ -318,6 +367,17 @@ return view.extend({
 			E('div', { 'class': 'dd-card' }, [
 				E('h4', { 'class': 'dd-card-title' }, _('Package Updates')),
 				pkgBody
+			]),
+			E('div', { 'class': 'dd-card' }, [
+				E('h4', { 'class': 'dd-card-title' }, _('Config Backup')),
+				E('div', { 'class': 'dd-up-row' }, [
+					E('span', { 'class': 'dd-up-icon dd-up-new' }, '⤓'),
+					E('span', { 'class': 'dd-up-name' }, _('dae + daed')),
+					E('span', { 'class': 'dd-up-meta' }, _('Back up / restore the whole daede config (kernels excluded)')),
+					exportBtn,
+					importBtn
+				]),
+				fileInput
 			]),
 			(function() {
 				const adv = E('div', { 'class': 'dd-adv dd-closed' }, [
