@@ -58,6 +58,8 @@ const CSS = [
 	/* selects cap at 200px on wide screens, shrink to the column on mobile (no overflow) */
 	'.dd-geo-row select{width:100%!important;max-width:200px;box-sizing:border-box}',
 	'.dd-geo-auto{display:inline-flex;align-items:center;gap:6px}',
+	/* Argon shifts label>checkbox down (top:.4rem); reset so flex centers it */
+	'.dd-geo-auto input[type="checkbox"]{position:static;top:auto;right:auto;margin:0}',
 	'.dd-geo-actions{margin-top:10px;display:flex;gap:10px;align-items:center}',
 	'.dd-up-log{margin-top:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;padding:10px;border:1px solid rgba(128,128,128,.14);border-radius:8px;max-height:200px;overflow:auto;white-space:pre-wrap;word-break:break-all;display:none;background:inherit;color:#4a8c63}',
 	'.dd-up-log.show{display:block}',
